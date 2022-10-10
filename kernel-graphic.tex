@@ -1,0 +1,63 @@
+\documentclass{standalone}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+    \usetikzlibrary{positioning,arrows,backgrounds}
+
+% \input{tex-preambles/Content.tex}
+% \input{tex-preambles/tikz-sets.tex}
+% \input{tex-preambles/math-preambles.tex}
+% \input{tex-preambles/listings-preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}
+    %% For All
+    \node[outer sep=5pt, fill=black!15] (form) at (0,0) 
+    {\begin{tikzcd}[background color=black!15,column sep=tiny]
+        W & & V \arrow[ll,"\phi"{above}]\\
+        & \phantom{\ker\phi}\\
+        & \phantom{J}
+    \end{tikzcd}};
+
+    \node (all) at (form.north west) {$\forall$};
+    \draw[thick] (all.south) -- (form.south west);
+
+    %% There exists
+    \node[outer sep=5pt, fill=black!15] (form) at (3.5,0) 
+    {\begin{tikzcd}[
+        background color=black!15,
+        column sep=tiny
+        ]
+        W & & V\arrow[ll,"\phi"{above}]\\
+         & \ker\phi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
+         &\phantom{J}
+    \end{tikzcd}};
+
+    \node (exists) at (form.north west) {$\exists$};
+    \draw[thick] (exists.south) -- (form.south west);
+
+    %% For All constraints
+    \node[outer sep=5pt, fill=black!15] (constraint) at (7,0) 
+    {\begin{tikzcd}[background color=black!15,column sep=tiny]
+        W & & V\arrow[ll,"\phi"{above}]\\
+         & \ker\phi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
+         & J \arrow[uul,bend left,"0"{below}]\arrow[uur, hook, bend right, "\kappa"{below}]
+    \end{tikzcd}};
+
+    \node (all2) at (constraint.north west) {$\forall$};
+    \draw[thick] (all2.south) -- (constraint.south west);
+    
+    %% exist unique
+    \node[outer sep=5pt, fill=black!15] (universal) at (10.5,0) 
+    {\begin{tikzcd}[background color=black!15,column sep=tiny]
+        W & & V\arrow[ll,"\phi"{above}]\\
+         & \ker\phi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
+         & J \arrow[uul,bend left,"0"{below}]\arrow[uur, hook, bend right,"\kappa"{below}]\arrow[u]
+    \end{tikzcd}};
+
+    \node (unique) at (universal.north west) {$\exists !$};
+    \draw[thick] (unique.south) -- (universal.south west);
+    
+
+\end{tikzpicture}
+\end{document}
