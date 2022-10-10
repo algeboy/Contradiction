@@ -9,6 +9,7 @@
 \date{\today}
 \begin{document}
 
+
 \section*{Kernels}
 
 \subsection{Kernels in Set language}
@@ -47,8 +48,7 @@ offers no answer.
 % to computing.
 
 \subsection{Kernels in Computer Algebra Systems}
-
-Let us input a linear mapping (as a matrix) into a computer algebra system.
+We can begin by inputting a linear mapping (as a matrix) into a computer algebra system.
 \begin{notebookin}
 Phi = [ 1 1 1; 1 0 1; 0 2 0; 3 5 3 ]
 print Phi
@@ -77,27 +77,50 @@ set.  Why?
 
 
 \subsection{Kernels in Diagram language}
-Let us expand on a possible alternative definition of kernels 
-using diagrams.  For all linear maps we can draw a diagram as follows.
+To decode the difference between the set-wise concept of a kernel 
+and what a program provides, we start with an alternative definition of kernels 
+using diagrams and focussed on what it means to put data into the kernel
+and to get data out of the kernel.
+
+We start with a linear map, and so that gives us our first diagram.
+It is introduced with $\forall$ because it applies to \emph{all} linear maps.
+We should also indicate somewhere that that context is modules, which 
+we do once at the start by writing ${_{\Omega} \mathsf{Mod}}$.  Often 
+we authors skip that step letting context be know implicitly.
 \begin{center}
     \begin{tikzpicture}
         %% For All
         \node[outer sep=5pt] (form) at (0,0) 
         {\begin{tikzcd}[background color=black!15,column sep=tiny]
-            W & \phantom{J} & V \arrow[ll,"\phi"{above}]
+            W & \phantom{J} & V \arrow[ll,"\varphi"{above}]
         \end{tikzcd}};
     
         \node (all) at (form.north west) {$\forall$};
         \draw[thick] (all.south) -- (form.south west);
+
+        \node (text) at (form.north) {${_{\Omega}\mathsf{Mod}}$};
     \end{tikzpicture}       
 \end{center}
-Kernels exist for every linear map, which must be connected 
-to the above diagram, requiring two knew arrows.  One arrow is 
-just $0$, and the second $\iota$ is injective.  Notice the arrows 
-$\iota$ feeds into the arrow $\varphi$ which indicates we can compose 
+
+Kernels exist for every linear map and will appear as a new structure denoted 
+$\ker\varphi$.  This on its own would have no relation to $\varphi$ in the diagram, so we draw out that relationship by adding new arrows, new 
+linear functions that is.  One arrow is 
+just $0$, and the second $\iota$ is injective.  
+
+The $0$ arrow should be explained a bit, it just means $0(x)=x$.  
+This is an uneventful step but its role will unfold as necessary because it 
+will offer the constraint to the equations that follow.  Without it there would 
+be no equations and thus no solutions.  Note, some authors prefer to take 
+two steps for zero functions pausing to pass through the zero module 
+$\{0\}$.  Somewhat confusingly that space is also written as $0$. Get used to it but prepared to explain your own missuses of 0 should anyone ask you.
+So instead of writing $0:A\to B$ some authors will write a sequence of arrows 
+$A\to 0\to B$.
+
+The real star is the arrow denoted by $\iota$ which feeds into the arrow $\varphi$.  Lining up the arrows 
+indicates we can compose 
 these two functions $\varphi\circ \iota$.  This should equal the other 
 arrow reaching the same point, namely $0$.  So $\varphi\circ \iota=0$,
-or rather $\varphi(\iota(k))=0$ for $k\in K$.  We say the 
+or rather $\varphi(\iota(k))=0$ for $k\in \ker\varphi$.  We say the 
 diagram \emph{commutes} and we indicate this by shading the background.
 \begin{center}
     \begin{tikzpicture}
@@ -107,8 +130,8 @@ diagram \emph{commutes} and we indicate this by shading the background.
         background color=black!15,
         column sep=tiny
         ]
-        W & & V\arrow[ll,"\phi"{above}]\\
-            & \ker\phi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]
+        W & & V\arrow[ll,"\varphi"{above}]\\
+            & \ker\varphi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]
     \end{tikzcd}};
 
     \node (exists) at (form.north west) {$\exists$};
@@ -116,22 +139,29 @@ diagram \emph{commutes} and we indicate this by shading the background.
 \end{tikzpicture}  
 \end{center}
 The $\iota$ in this diagram is a new linear map, and so it could be 
-given by a matrix.  That matrix will in fact be the matrix output by 
-our above code.
+given by a matrix.  In the example given earlier, the matrix 
+$\Phi$ produced a kernel function $\iota$ whose matrix was the matrix
+that our computer produced.  So through our new lens of kernels the 
+computer output is correct, we should get a matrix not a set.
 
-But many spaces $J$ and functions $\kappa:J\to V$ could play the role of
-$\ker\varphi$ shown in the above diagram, including  $J=\{0\}$.  So this cannot
-be a complete understanding of kernels.  We need $\ker\varphi$ to be a big as
-possible.  To add that to the diagram let us add such a hypothetical $J$ 
-to the diagram.
+Unfortunately we cannot stop here even though we have the promised kernel.
+This is because many spaces $K$ and functions $\kappa:K\to V$ could play the role of
+$\ker\varphi$ as shown in the above diagram without actually being the 
+kernel we have in mind.  For example, $K=\{0\}$ certainly would do the same 
+but the matrix $\Phi$ given earlier we expect a different answer.  So this cannot
+be a complete understanding of kernels.  We need $\ker\varphi$ to be ``as big as
+possible''.  Even saying that we find a puzzle because what would it mean 
+for a function to be ``as big as possible''.  To resolve this let us 
+add to our diagram an other data and functions that can match what we already 
+know about kernels.
 \begin{center}
     \begin{tikzpicture}
     %% For All constraints
     \node[outer sep=5pt, fill=black!15] (constraint) at (8,0) 
     {\begin{tikzcd}[background color=black!15,column sep=tiny]
-        W & & V\arrow[ll,"\phi"{above}]\\
-         & \ker\phi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
-         & J \arrow[uul,bend left,"0"{below}]\arrow[uur, hook, bend right]
+        W & & V\arrow[ll,"\varphi"{above}]\\
+         & \ker\varphi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
+         & K \arrow[uul,bend left,"0"{below}]\arrow[uur, hook, bend right, "\kappa"{below}]
     \end{tikzcd}};
 
     \node (all2) at (constraint.north west) {$\forall$};
@@ -139,17 +169,23 @@ to the diagram.
         
     \end{tikzpicture}
 \end{center}
-Now that we have two candidates for kernels we can insist that the 
-first, $\ker\varphi$ is largest by insisting that all others 
-map into it.  This completes our diagram.
+The quantifier $\forall$ here now ranges over $\kappa:K\to V$ so we are 
+setting ourselves up to compare how our chosen $\ker\varphi$ compares to 
+any other possible solution.
+
+The conclusion you might have guessed is that if our solution should be 
+at least as capable as any other, and to diagram that we simply need that 
+every alternative solution can be mapped into our own $\ker \varphi$.  So there
+exists a unique new arrow $K\to \ker\varphi$ transforming any competitor data 
+into data of our own type, as shown below.
 \begin{center}
 \begin{tikzpicture}
     %% exist unique
     \node[outer sep=5pt, fill=black!15] (universal) at (12,0) 
     {\begin{tikzcd}[background color=black!15,column sep=tiny]
-        W & & V\arrow[ll,"\phi"{above}]\\
-         & \ker\phi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
-         & J \arrow[uul,bend left,"0"{below}]\arrow[uur, hook, bend right]\arrow[u]
+        W & & V\arrow[ll,"\varphi"{above}]\\
+         & \ker\varphi\arrow[lu,"0"{below}]\arrow[ur,hook,"\iota"{below}]\\
+         & K \arrow[uul,bend left,"0"{below}]\arrow[uur, hook, bend right, "\kappa"{below}]\arrow[u]
     \end{tikzcd}};
 
     \node (unique) at (universal.north west) {$\exists !$};
@@ -158,15 +194,34 @@ map into it.  This completes our diagram.
 \end{tikzpicture}    
 \end{center}
 
-It is important to see all four diagrams as individually contributing
-to the concept of a kernel, much like a graphic novel.  
-
+Like frames in a graphic novel, these four diagrams should be read 
+as a timeline, see Figure~\ref{fig:kernel-diag}.  
 \begin{figure}[!htbp]
 \begin{center}
     \includegraphics[width=\textwidth]{kernel-graphic.pdf}
 \end{center}
 \caption{The diagram description of kernels.}
+\label{fig:kernel-diag}
 \end{figure}
+
+This pattern of 
+``$\forall \exists\forall\exists!$'' will be repeated many times in similar 
+constructions.  In fact the longer we work with logical puzzles we will 
+find the steady use of the pattern 
+\begin{align*}
+    \Pi_n & \equiv \overbrace{\forall \exists\cdots \forall \exists}^n
+    & 
+    \Sigma_n & \equiv \overbrace{\exists\forall\cdots \exists\forall}^n.
+\end{align*}
+These organizations of logical sentences was introduced by Kleene and 
+Mostowski and is known today as the \emph{Arithmetical Hierarchy}.
+Programmers who ask how hard it is to prove statements in that Hierarchy 
+will find they have invented the \emph{Polynomial-time Hierarchy}.
+So it is worth getting comfortable with the meaning, but we warned 
+that answering questions in these hierarchies could earn you a million Euro 
+prize and your name in the newspaper.  One of the leading questions 
+is this tower may one day collapse, meaning that you only need to go 
+to some fixed value of $n$ before you know everything.
 
 \subsection{Kernels in Typed language}
 
@@ -175,53 +230,97 @@ functions that have a maximal quality.  Yet, programs do not think in pictures,
 we do.  So we need to translate the same ideas to a syntax we can turn into a 
 program.  Here is how.
 
-First the question depends on space $V$ and $W$ and a linear map $\varphi:V\to W$ 
-known first from context, denote $\mathsf{ctx}$ or $\Gamma$.  Using the notation 
+First the question depends on $\Omega$-modules $V$ and $W$ and a linear map $\varphi:V\to W$ 
+known first from context, denoted $\mathsf{ctx}$ or $\Gamma$.  Using the notation 
 $P\vdash Q$ to say ``$P$ leads to $Q$'', also denoted $\frac{P}{Q}$, then we can 
-state this foundation assumptions as follows.
+state this as forming the kernel under a list of assumed knowledge.
 \begin{gather}
     \tag{$\form{\ker}$}
     \frac{
         \mathsf{ctx} \vdash V,W:{_{\Omega} \mathsf{Mod}}\qquad
         \varphi:\mathsf{Lin}_{\Omega}(V,W)
     }{
-        \mathsf{ctx}\vdash \ker\phi:\mathsf{Type}
+        \mathsf{ctx}\vdash \ker\varphi:\mathsf{Type}
     }
 \end{gather}
-The label $\form{\ker}$ stands for \emph{formation} as we are forming the new 
-type of data $\ker\varphi$.  Programs write this in many different forms 
-but one example is as the following.
+The label $\form{\ker}$ stands for \emph{formation}.  Programs write this in
+many different ways usually by introducing some keywords like ``import''
+and ``use X from Y'.  To introduce a new type of data a keyword such as ``class''
+or ``type'' is used.  For example, the following pseudo-code reflects the 
+content of $(\form{\ker})$ but in a dialect similar to several modern 
+procedural programming 
+languages such as C++ and Java.
 \begin{lstlisting}[language=Sava]
 using V,W:Mod[Omega], Phi:Lin[V,W] from ctx
+class Ker[Phi] {...}
+\end{lstlisting}
+For those using functional programming languages like OCaml or Haskell the following syntax offers 
+as similar translation.
+\begin{lstlisting}[language=Hidris]
+import V,W:Mod Omega, Phi:Lin V W from ctx
+type Ker Phi
 \end{lstlisting}
 
+
+
+\begin{lstfloat}[!htbp]
+\begin{lstlisting}[language=Sava]
+// Procedural style code
+class Ker[Phi](k:K,kappa:K->V) where (Phi(kappa(k)) == 0)
+// usage 
+Phi = ...; k = ...; kappa = ...;
+x = new Ker[Phi](k,kappa)
+\end{lstlisting}
+\begin{lstlisting}[language=Hidris]
+--- Functional style code
+type Ker Phi
+null: (k:K)-> (kappa:K->V)-> (Phi kappa k == 0)-> Ker Phi
+--- usage 
+Phi= ...; k= ...; kappa= ...;
+x= null Phi k kappa --- system checks Phi kappa k == 0
+\end{lstlisting}    
+\caption{An introduction of data to a kernel.}
+\label{lst:kernel-intro}
+\end{lstfloat}
+    
 Next the diagram above captured the high-level movement of that data without 
 ever considering the actual data.  The programs will certainly need these 
-data.  The premise from the diagram is that any data $j:J$ which can produce 
-values $\kappa(j):V$ where $\varphi(\kappa(j))=0$ (see the diagrams above).
-Any such data $j:J$ is meant to produce data in the kernel, because the 
+data.  The premise from the diagram is that any data $k:K$ which is found to 
+have $\kappa(k):V$ where $\varphi(\kappa(j))=0$ (see the diagrams above) must 
+produce data in $\ker\varphi$.
+Any such data $k:K$ is meant to produce data in the kernel, because the 
 kernel is the largest such structure.  So we include such a rule.
 \begin{gather}
     \tag{$\intro{\ker}$}
     \frac{
-        j:J\qquad \kappa:J\to V\qquad pf:\varphi(\kappa(j))=_W 0
+        k:K\qquad \kappa:K\to V\qquad pf:\varphi(\kappa(k))=_W 0
     }{
-        \mathsf{null}(\kappa(j)):\ker\varphi
+        \mathsf{null}(\kappa(k)):\ker\varphi
     }
 \end{gather}
 The $\intro{\ker}$ here is for \emph{introduction} because data is 
-being introduced of the desired type.
-Programers may recognize the use $pf:\varphi(\kappa(j))=_W 0$ as what is known 
-as a \emph{guard} or \emph{rail}.  It is a type of documentation added to a 
-program to let the programming language enforce that data is used in restricted 
-ways.  In this case, no one can introduce a term in the kernel without proof.
-In code this can be captured in a number of ways, here is one option.
-\begin{lstlisting}[language=Sava]
-class Ker[Phi] {
-    def null(j:J,kappa:J->V, 
-        require Phi(kappa(j)) == 0)
-}
-\end{lstlisting}
+being introduced of the desired type.  
+Most readers will not be prepared for the meaning of symbols like:
+\[
+    pf:\varphi(\kappa(k))=_W 0
+\] 
+Programmers however are uniquely well-positioned to guess the meaning. We want
+some data $pf$ that has the type $\varphi(\kappa(k))=0$ in $W$. Said another
+way, we need someone to provide a proof of that equality. In programs this can
+be done by several tricks most common are what are known as \emph{guards} or
+\emph{rails}.  These are a type of documentation added to a program to let the
+programming language enforce that data is used in restricted ways.  In this
+case, no one can introduce a term in the kernel without proof. In code this can
+be captured in a number of ways, Listing~\ref{lst:kernel-intro} is one option.
+
+% The introduction of data of some kind is known 
+% to programmers as a \emph{constructor} and many languages make special 
+% rules to specify constructors.  For uniformity and simplicity we here 
+% use `def' to introduce all service functions to a data type and name 
+% the function to match the notation used in the mathematical formalism.
+% But any real program will adapt the vocabulary and style to fit with 
+% conventions.
+
 
 Now it is time to use data in the kernel.  It is clear how this should 
 proceed, anything in the kernel can be mapped to $0$ in $W$ or to a 
@@ -240,27 +339,72 @@ as follows.
         \iota(x):V
     }
 \end{gather}
-In code this might be done as follows.
+The name $\elim{\ker}$ stands for \emph{elimination} as we are eliminating 
+the kernel type to get to new types.
+In code this might be done as shown in the code fragment Listing~\ref{lst:kernel-elim}.
+\begin{lstfloat}[!htbp]
 \begin{lstlisting}[language=Sava]
-class Ker[Phi] {
-    def iota:V 
-    def zero:W
+// Procedural style code
+class Ker[Phi](k:K,kappa:K->V) where (Phi(kappa(k))== 0){
+    def iota:V = ...
+    def zero:W = ...
 }
+// usage 
+x = new Ker[Phi](k,kappa)
+v = x.iota
 \end{lstlisting}
-Such rules are known as \emph{eliminations} as they eliminate 
-the type annotation.
+\begin{lstlisting}[language=Hidris]
+--- Functional style code
+iota: Ker Phi -> V
+...
+zero: Ker Phi -> W
+...
+--- usage 
+x= null Phi k kappa --- system checks Phi kappa k == 0
+v = iota x
+\end{lstlisting}    
+\caption{Using of data of kernel type.}
+\label{lst:kernel-elim}
+\end{lstfloat}
 
 Finally we need to do some computing somewhere and we learn 
 what to compute by inspecting the condition of ``commutative diagrams''.
 \begin{gather}
     \tag{$\comp{\ker}$}
     \frac{
-        j:J\qquad \kappa:J\to V\qquad pf:\varphi(\kappa(j))=_W 0
+        k:K\qquad \kappa:K\to V\qquad pf:\varphi(\kappa(j))=_W 0
     }{
-        \iota(x) \defeq \kappa(j)
+        \iota(x) \defeq \kappa(k)
     }
 \end{gather}
-All together this may look like the following.
+All together this comes together in software in many different ways 
+each designed around different techniques to improve how we read and 
+execute code.  Listing~\ref{lst:kernel-comp} provides some of the options.
+\begin{lstfloat}[!htbp]
+\begin{lstlisting}[language=Sava]
+// Procedural style code
+class Ker[Phi](k:K,kappa:K->V) where (Phi(kappa(k))== 0){
+    def iota:V = kappa(k)
+    def zero:W = 0
+}
+// usage 
+x = new Ker[Phi](k,kappa)
+v = x.iota
+\end{lstlisting}
+\begin{lstlisting}[language=Hidris]
+--- Functional style code
+iota: Ker Phi -> V
+iota x = kappa k where x = null k kappa
+zero: Ker Phi -> W
+zero x = 0
+--- usage 
+x= null Phi k kappa --- system checks Phi kappa k == 0
+v = iota x
+\end{lstlisting}    
+\caption{Using of data of kernel type.}
+\label{lst:kernel-elim}
+\end{lstfloat}
+\begin{lstfloat}
 \begin{lstlisting}[language=Sava]
 using V,W:Mod[Omega], Phi:Lin[V,W] from ctx
 class Ker[Phi] {
@@ -274,6 +418,8 @@ class Ker[Phi] {
     def zero:W = 0
 }
 \end{lstlisting}
+\caption{A complete data type for kernels}    
+\end{lstfloat}
 
 
 \subsection{Computing a kernel}
