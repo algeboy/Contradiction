@@ -5,12 +5,260 @@
 \input{tex-preambles/math-preambles.tex}
 \input{tex-preambles/listings-preamble.tex}
 
+\usepackage{CJKutf8}
 \author{James B. Wilson}
 \date{\today}
 \begin{document}
 
+\chapter{The Four Spaces}
 
-\section*{Kernels}
+
+\begin{table}[!htbp]
+    \centering
+    \includegraphics{4-space-table.pdf}
+    \caption{The 4 spaces of a linear map.}
+    \label{tab:4-spaces}
+\end{table}
+\begin{CJK*}{UTF8}{gbsn}
+\subsection{ 方程 ~Fang cheng}
+\end{CJK*}
+Algorithms appearing in China around 2000 years
+ago depict the use of linear algebra on matrices 
+to solve problems.  The Chinese called these matrices 
+\emph{F\u{a}ng} \emph{ch\'eng}.
+A thousand years later in Iraq and Iran where inventing algebra
+and using it to solve systems of linear equations.
+In the late 1600's Leibniz recorded matrix ideas for European 
+scholars and may have even been aware of the Chinese Fang cheng
+before doing so.  
+A number of textbooks today call this process
+``Gaussian Elimination'' after the 19th century math polymath 
+Carl Friedrich Gauss who systemized the mechanics.  
+Now that the Chinese origins are better known the best 
+practice in history would promote this attribution instead.
+
+\begin{definition}
+    For a natural number $m$, $[m]=\{1,\ldots,m\}$ with $[0]$
+    the empty set.
+    An \emph{$m\times n$-matrix} $\Phi$ over $\Delta$
+    is a function $\Phi:[m]\times [n]\to \Delta$.
+    These are also denoted $\Phi\in \Delta^{m\times n}$.
+    Evaluating that function as $(i,j)$ is denoted 
+    $\Phi_{ij}$.  The coordinates $i$ are called \emph{rows}
+    and the $j$'s are colled \emph{columns}.
+\end{definition}
+
+Of the many important classes of $(m\times n)$-matrices the following list are the fundamental ones.
+\begin{gather}
+    \tag{$E_{ij}$}
+    (E_{ij})_{kl}  = \left\{\begin{array}{cc}
+        1 & i=k, j=l\\
+        0 & \text{else}
+    \end{array}\right.\\
+\end{gather}
+These are sometimes called \emph{matrix units}.
+For example for $m=3,n=4$ we have
+\[
+    E_{23}=\begin{bmatrix} 0 & 0 & 0 \\ 0 & 0 & 1 \\ 0 & 0 & 0 \end{bmatrix}
+    \qquad
+    E_{22}=\begin{bmatrix} 0 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{bmatrix}
+    \qquad 
+    E_{32}
+    =\begin{bmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix}
+\]
+\begin{proposition}
+    Every $(m\times n)$-matrix $\Phi$ is the sum of scaled matrix units,
+    \[
+        \Phi = \sum_{i}\sum_j \Phi_{ij}E_{ij}.
+    \]
+\end{proposition}
+
+For $m=n$ we have the following essential matrices.
+\begin{gather}
+    \tag{$I_n$}
+    (I_n)_{ij} = \left\{\begin{array}{cc}
+        1 & i=j\\
+        0 & \text{else}
+    \end{array}\right.\\
+    \tag{Transvection}
+    I_n+\alpha E_{ij}  \quad i\neq j\\
+    \tag{Diagonal}
+    Diag(a_1,\ldots,a_n)_{ij} = \left\{\begin{array}{cc}
+        a_i & i=j\\
+        0 & \text{else}
+    \end{array}\right.\\
+    \tag{Permutation}
+    \Sigma_{ij}\neq 0  \Rightarrow (\Sigma_{ij}=1) \& (k\neq i\Rightarrow \Sigma_{kj}=0)
+    \& (j\neq k\Rightarrow \Sigma_{ik}=0).
+\end{gather}
+These last three families are known as \emph{elementary matrices}.
+Each is invertible.
+
+\subsection{Clearing a row}
+
+\begin{definition}
+    Fix a ring $\Delta$.
+    A coordinate vector $v\in \Delta^m$ is \emph{pivotable}
+    if there is a $u\in \Delta^m$ such that 
+    \begin{align*}
+        u\cdot v & = \sum_{i:[m]} u_i v_i  = 1.
+    \end{align*}
+\end{definition}
+
+\begin{proposition}
+    If $v$ is pivotable and $u\cdot v=1$ then $u$ is also pivotable.
+\end{proposition}
+
+In some situations it makes sense to replace the dot-product 
+with another bilinear form, for example using complex conjugation
+or weighted dot-products or other geometric considerations.
+
+\begin{proposition}
+    If $\Delta$ is a division ring then very non-zero vector is pivotable.    
+\end{proposition}
+\begin{proof}
+    if $v\neq 0$ then for some $i$, $v_i\neq 0$.  As $\Delta$ is a division 
+    ring, $v_i^{-1}$ exists.  So set $u=v_i^{-1} e_i$. Thus, 
+    $u\cdot v=v_i^{-1} v_i=1$.
+\end{proof}
+
+\begin{example}
+    Over $\mathbb{Z}$, $v=(2,3,7)$ is pivotable but $w=(2,6,14)$ is not.
+\end{example}
+\begin{proof}
+    $1=\gcd(2,3,7)=3\cdot 2+(-1)3+0\cdot 7$ whereas 
+    $2a+6b+14c$ is always even and therefore never equal to $1$.
+\end{proof}
+
+\begin{proposition}
+    Given a matrix $\Phi$ and a pivotable column $j$, 
+    then there is an invertible matrix $R_j$ such that $(R_j\Phi)_{*j}=e_i$.
+\end{proposition}
+\begin{proof}
+    Let $R_j$ be the identity $(m\times m)$-matrix with the $i$-th row removed 
+    and replaced by some $u$ for which $u\cdot \Phi_{*j}=1$.
+    Then 
+    \begin{align*}
+        (R_j \Phi)_{ij} & = u\cdot \Phi_{*j}=1.
+    \end{align*}
+
+    For any other non-zero entry $\Phi_{kj}$, define the transvection 
+    \begin{align*}
+        T_k & = I_m + (-\Phi_{kj}\Phi_{ij})E_{ik}
+    \end{align*}
+    It follows that 
+    \begin{align*}
+        (T_k \Phi)_{kj} = 0.
+    \end{align*}
+    So it is possible through a sequence of at most $m-1$ transvections 
+    to clear the non-zero values in column $j$.
+\end{proof}
+
+
+Given a matrix $\Phi$ and an entry $\Phi_{ij}$ which divides 
+all other entries $\Phi_{kj}$,
+
+Augment the matrix $\Phi$ by $I_m$ to create a tableaux
+$T=[I_m | \Phi]$.  
+The \emph{admissible} rows are initially $\{1,\ldots,m\}$.
+Choose an admissible row $i$.  Scan the $\Phi$ block for 
+a column $j$ with $\Phi_{ij}\neq 0$. Since we 
+are over a division ring $\Phi_{ij}$ is therefore invertible.
+
+
+Let us consider a matrix in which a subset of the columns 
+are an identity matrix.  That is, up to possibly permuting 
+the columns the matrix has the form
+\begin{align*}
+    \begin{bmatrix}
+        I_r & M \\ 
+        0 & 0 
+    \end{bmatrix}\in \Delta^{m\times n}
+\end{align*}
+Then an answer would be written down with formula 
+requiring no computation:
+\begin{align*}
+    \begin{bmatrix}
+        I_r & M \\ 
+        0 & 0 
+    \end{bmatrix}
+    \begin{bmatrix}
+        -M  \\ 
+        I_{n-r} 
+    \end{bmatrix}
+    & = 
+    \begin{bmatrix}
+        0\\
+        0
+    \end{bmatrix}
+\end{align*}
+
+
+\begin{proposition}
+    For every $(m\times n)$-matrix $\Phi$ over a division ring $\Delta$,
+    there is an invertible matrix 
+    $R$ and a permutation matrix $\Sigma$ such that 
+    \begin{align*}
+        R\Phi \Sigma & = \begin{bmatrix}
+            I_r & M \\
+            0 & 0 
+        \end{bmatrix}.
+    \end{align*}
+    Furthermore 
+    \begin{align*}
+        \Sigma \begin{bmatrix} -M\\ I_{n-r}\end{bmatrix}
+    \end{align*}
+    is a kernel map $\iota:\Delta^{n-r}\to \Delta^n$.
+\end{proposition}
+\begin{proof}
+    Augment the matrix $\Phi$ by $I_m$ to create a tableaux
+    $T=[I_m | \Phi]$.  
+    The \emph{admissible} rows are initially $\{1,\ldots,m\}$.
+    Choose an admissible row $i$.  Scan the $\Phi$ block for 
+    a column $j$ with $\Phi_{ij}\neq 0$. Since we 
+    are over a division ring $\Phi_{ij}$ is therefore invertible.
+
+
+    Select a non-zero column $j$ in the $\Phi$ 
+    block that is non-zero.  
+    \begin{align*}
+        \begin{bmatrix}
+            \Phi_{ij}^{-1} I_n 
+        \end{bmatrix}
+    \end{align*}    
+\end{proof}
+\begin{lstlisting}[language=Sava]
+def enteringCol():Fin[n]
+
+\end{lstlisting}
+
+Suppose 
+\begin{align*}
+    \Phi & = 
+    \begin{bmatrix}
+        1 & 0 & -2 & 1\\
+        0 & 1 & 2 & 2\\
+        0 & 0 & 0 & 0
+    \end{bmatrix}
+\end{align*}
+
+
+\begin{definition}
+    A matrix $\Phi$ is in \emph{Reduce Row Echelon Form (RREF)}
+    if there is a permutation matrix $\Sigma$ of the columns such 
+    that 
+    \begin{align*}
+        \Phi\Sigma & = \begin{bmatrix}
+            I_r & M \\
+            0 & 0 
+        \end{bmatrix}.
+    \end{align*}
+\end{definition}
+
+
+
+
+\section{Kernels}
 
 \subsection{Kernels in Set language}
 Given $\Omega$-modules $V$ and $W$ and a linear map $\varphi:V\to W$, 
@@ -48,7 +296,8 @@ offers no answer.
 % to computing.
 
 \subsection{Kernels in Computer Algebra Systems}
-We can begin by inputting a linear mapping (as a matrix) into a computer algebra system.
+We can begin by inputting a linear mapping (as a matrix) into a computer algebra
+system.
 \begin{notebookin}
 Phi = [ 1 1 1; 1 0 1; 0 2 0; 3 5 3 ]
 print Phi
@@ -74,7 +323,11 @@ print K
 This may be a surprise.  This is a matrix, not a 
 set.  Why?
 
-
+\begin{prob}
+    Find access to a computer algebra system 
+    and compute kernels of random $1000\times 1200$, 
+    $1000 \times 1000$ and $1200\time 1000$ matrices.
+\end{prob}
 
 \subsection{Kernels in Diagram language}
 To decode the difference between the set-wise concept of a kernel 
@@ -84,9 +337,10 @@ and to get data out of the kernel.
 
 We start with a linear map, and so that gives us our first diagram.
 It is introduced with $\forall$ because it applies to \emph{all} linear maps.
-We should also indicate somewhere that that context is modules, which 
+We should also indicate somewhere that the context is modules, which 
 we do once at the start by writing ${_{\Omega} \mathsf{Mod}}$.  Often 
-we authors skip that step letting context be know implicitly.
+we authors skip that step letting context be know implicitly.  In any case
+the figure we start with is below.
 \begin{center}
     \begin{tikzpicture}
         %% For All
@@ -105,23 +359,7 @@ we authors skip that step letting context be know implicitly.
 Kernels exist for every linear map and will appear as a new structure denoted 
 $\ker\varphi$.  This on its own would have no relation to $\varphi$ in the diagram, so we draw out that relationship by adding new arrows, new 
 linear functions that is.  One arrow is 
-just $0$, and the second $\iota$ is injective.  
-
-The $0$ arrow should be explained a bit, it just means $0(x)=x$.  
-This is an uneventful step but its role will unfold as necessary because it 
-will offer the constraint to the equations that follow.  Without it there would 
-be no equations and thus no solutions.  Note, some authors prefer to take 
-two steps for zero functions pausing to pass through the zero module 
-$\{0\}$.  Somewhat confusingly that space is also written as $0$. Get used to it but prepared to explain your own missuses of 0 should anyone ask you.
-So instead of writing $0:A\to B$ some authors will write a sequence of arrows 
-$A\to 0\to B$.
-
-The real star is the arrow denoted by $\iota$ which feeds into the arrow $\varphi$.  Lining up the arrows 
-indicates we can compose 
-these two functions $\varphi\circ \iota$.  This should equal the other 
-arrow reaching the same point, namely $0$.  So $\varphi\circ \iota=0$,
-or rather $\varphi(\iota(k))=0$ for $k\in \ker\varphi$.  We say the 
-diagram \emph{commutes} and we indicate this by shading the background.
+just $0$, and the second $\iota$ is injective, displayed with a hook.  
 \begin{center}
     \begin{tikzpicture}
     %% There exists
@@ -138,22 +376,38 @@ diagram \emph{commutes} and we indicate this by shading the background.
     \draw[thick] (exists.south) -- (form.south west);
 \end{tikzpicture}  
 \end{center}
+
+The $0$ arrow should be explained a bit, it just means $0(x)=x$.  
+This is an uneventful step but its role will unfold as necessary because it will
+offer the constraint to the equations that follow.  Without it there would be no
+equations and thus no solutions.  Note, some authors prefer to take two steps
+for zero functions pausing to pass through the zero module $\{0\}$.  Somewhat
+confusingly that space is also written as $0$. Get used to it but prepared to
+explain your own missuses of $0$ should anyone ask you. So instead of writing
+$0:A\to B$ some authors will write a sequence of arrows $A\to 0\to B$.
+
+The real star is the arrow denoted by $\iota$ which feeds into the arrow
+$\varphi$.  Lining up the arrows indicates we can compose these two functions
+$\varphi\circ \iota$.  This should equal the other arrow reaching the same
+point, namely $0$.  So $\varphi\circ \iota=0$, or rather $\varphi(\iota(k))=0$
+for $k\in \ker\varphi$.  We say the diagram \emph{commutes} and we indicate this
+by shading the background.
+
 The $\iota$ in this diagram is a new linear map, and so it could be 
 given by a matrix.  In the example given earlier, the matrix 
 $\Phi$ produced a kernel function $\iota$ whose matrix was the matrix
 that our computer produced.  So through our new lens of kernels the 
 computer output is correct, we should get a matrix not a set.
 
-Unfortunately we cannot stop here even though we have the promised kernel.
-This is because many spaces $K$ and functions $\kappa:K\to V$ could play the role of
-$\ker\varphi$ as shown in the above diagram without actually being the 
-kernel we have in mind.  For example, $K=\{0\}$ certainly would do the same 
-but the matrix $\Phi$ given earlier we expect a different answer.  So this cannot
-be a complete understanding of kernels.  We need $\ker\varphi$ to be ``as big as
-possible''.  Even saying that we find a puzzle because what would it mean 
-for a function to be ``as big as possible''.  To resolve this let us 
-add to our diagram an other data and functions that can match what we already 
-know about kernels.
+Unfortunately we cannot stop here even though we have the promised kernel. This
+is because many spaces $K$ and functions $\kappa:K\to V$ could play the role of
+$\ker\varphi$ as shown in the above diagram without actually being the kernel we
+have in mind.  For example, $K=\{0\}$ certainly would do the same but for the matrix
+$\Phi$ given earlier we expect a different answer.  So this cannot be a complete
+understanding of kernels.  We need $\ker\varphi$ to be ``as big as possible''.
+Even saying that we find a puzzle because what would it mean for a function to
+be ``as big as possible''.  To resolve this let us add to our diagram any other
+data and functions that can match what we already know about kernels.
 \begin{center}
     \begin{tikzpicture}
     %% For All constraints
@@ -173,7 +427,7 @@ The quantifier $\forall$ here now ranges over $\kappa:K\to V$ so we are
 setting ourselves up to compare how our chosen $\ker\varphi$ compares to 
 any other possible solution.
 
-The conclusion you might have guessed is that if our solution should be 
+The conclusion you might have guessed is that our solution should be 
 at least as capable as any other, and to diagram that we simply need that 
 every alternative solution can be mapped into our own $\ker \varphi$.  So there
 exists a unique new arrow $K\to \ker\varphi$ transforming any competitor data 
@@ -217,11 +471,18 @@ These organizations of logical sentences was introduced by Kleene and
 Mostowski and is known today as the \emph{Arithmetical Hierarchy}.
 Programmers who ask how hard it is to prove statements in that Hierarchy 
 will find they have invented the \emph{Polynomial-time Hierarchy}.
-So it is worth getting comfortable with the meaning, but we warned 
+So it is worth getting comfortable with the meaning, but be warned 
 that answering questions in these hierarchies could earn you a million Euro 
 prize and your name in the newspaper.  One of the leading questions 
-is this tower may one day collapse, meaning that you only need to go 
+is if this tower may one day collapse, meaning that you only need to go 
 to some fixed value of $n$ before you know everything.
+
+\begin{prob} 
+    Prove that any two kernels are isomorphic.
+\end{prob}
+
+
+
 
 \subsection{Kernels in Typed language}
 
@@ -401,80 +662,27 @@ zero x = 0
 x= null Phi k kappa --- system checks Phi kappa k == 0
 v = iota x
 \end{lstlisting}    
-\caption{Using of data of kernel type.}
-\label{lst:kernel-elim}
+\caption{Complete data type for kernels.}
+\label{lst:kernel-comp}
 \end{lstfloat}
-\begin{lstfloat}
-\begin{lstlisting}[language=Sava]
-using V,W:Mod[Omega], Phi:Lin[V,W] from ctx
-class Ker[Phi] {
-    private v:V
+% \begin{lstfloat}
+% \begin{lstlisting}[language=Sava]
+% using V,W:Mod[Omega], Phi:Lin[V,W] from ctx
+% class Ker[Phi] {
+%     private v:V
 
-    def null(j:J, kappa:J->V, 
-        require Phi(kappa(j)) == 0) {
-        v = kappa(j)    
-    }
-    def iota:V = v
-    def zero:W = 0
-}
-\end{lstlisting}
-\caption{A complete data type for kernels}    
-\end{lstfloat}
-
-
-\subsection{Computing a kernel}
-Algorithms appearing in China around 2000 years
-ago appear to depict a version of computing kernels.
-A thousand years later in Irag and Iran the inventers of 
-algebra were solving systems of linear equations which 
-would necessitate the ability to solve kernels as well.
-In the 1800's Gauss's many contributions to math included 
-a systematic algorithm to solve for kernels.  Once you 
-have learned Gauss's method it becomes impossible to think 
-of any other likely solution.  For that reason the historic 
-examples are usually conjectured to be the same algorithm.
-
-Let us consider a matrix in which a subset of the columns 
-are an identity matrix.  That is, up to possibly permuting 
-the columns the matrix has the form
-\begin{align*}
-    \begin{bmatrix}
-        I_r & M \\ 
-        0 & 0 
-    \end{bmatrix}\in \Delta^{m\times n}
-\end{align*}
-Then an answer would be written down with formula 
-requiring no computation:
-\begin{align*}
-    \begin{bmatrix}
-        I_r & M \\ 
-        0 & 0 
-    \end{bmatrix}
-    \begin{bmatrix}
-        -M^{\dagger}  \\ 
-        I_{n-r} 
-    \end{bmatrix}
-    & = 
-    \begin{bmatrix}
-        0\\
-        0
-    \end{bmatrix}
-\end{align*}
+%     def null(j:J, kappa:J->V, 
+%         require Phi(kappa(j)) == 0) {
+%         v = kappa(j)    
+%     }
+%     def iota:V = v
+%     def zero:W = 0
+% }
+% \end{lstlisting}
+% \caption{A complete data type for kernels}    
+% \label{lst:kernel-comp}
+% \end{lstfloat}
 
 
-\begin{align*}
-    \Phi & = 
-    \begin{bmatrix}
-        1 & 1 & 0 & 3\\
-        0 & -1 & -2 & -2\\
-        0 & 0 & 0 & 0
-    \end{bmatrix}
-\end{align*}
-
-
-
-
-
-\subsection{Uniqueness questions}
 
 \end{document}

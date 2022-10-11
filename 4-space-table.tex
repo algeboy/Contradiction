@@ -1,0 +1,39 @@
+%
+% Table of bus schedules
+% http://www.ridetransfort.com/routes/routes
+% Accessed Jan. 2, 2022
+%
+% CC-BY James B. Wilson
+%
+\documentclass[12pt]{standalone}
+\input{tex-preambles/general-packages.tex}
+\input{tex-preambles/tikz-sets.tex}
+
+\begin{document}
+\begin{tikzpicture}[yscale=0.8,xscale=2.5]
+    \fill[teal!20] (0,0) -- ++(1,0) -- ++(0,4) -- ++(-1,0) -- cycle;
+    \fill[brown!20] (1,4) -- ++(4,0) -- ++(0,2) -- ++(-4,0) -- cycle;
+
+    \foreach \t in {0,2,4,6} {
+        \draw[thick] (0,\t) -- ++(5,0);
+    }
+    \foreach \t in {0,1,3,5} {
+        \draw[thick] (\t,0) -- ++(0,6);
+    }
+    % \draw[thick] (1.7,0) -- ++(1.5,0) -- ++(-0.3,-0.75) -- ++(-0.9,0) -- cycle;
+    % \node at (2.5,-0.4) {Weekends};
+    % \draw[fill=black!20,thick] (0,0) -- ++(2,0) -- ++(-0.3,-0.75) -- ++(-1.4,0) -- cycle;
+    % \node at (1,-0.5) {Weekdays};
+
+    \node at (0.5,1) {Submodule};
+        \node at (2,1) { $\mathsf{im}~\varphi\cong \mathsf{Span}~\Phi$};
+        \node at (4,1) { $\mathsf{ker}~\varphi\cong \mathsf{Null}~\Phi$};
+    \node at (0.5,3)  {Quotient};
+        \node at (2,3) { $\mathsf{coker}~\varphi\cong \mathsf{Null}~\Phi^{\dagger}$};
+        \node at (4,3) { $\mathsf{coim}~\varphi\cong \mathsf{Span}~\Phi^{\dagger}$};
+    \node at (0.5,5)  {$\varphi(v)=\Phi v$};
+        \node at (2,5)  {Codomain};
+        \node at (4,5) {Domain};
+
+\end{tikzpicture}
+\end{document}
