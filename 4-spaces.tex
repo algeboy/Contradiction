@@ -20,6 +20,7 @@
     \label{tab:4-spaces}
 \end{table}
 \begin{CJK*}{UTF8}{gbsn}
+
 \subsection{ 方程 ~Fang cheng}
 \end{CJK*}
 Algorithms appearing in China around 2000 years
@@ -37,25 +38,45 @@ Carl Friedrich Gauss who systemized the mechanics.
 Now that the Chinese origins are better known the best 
 practice in history would promote this attribution instead.
 
+
 \begin{definition}
-    For a natural number $m$, $[m]=\{1,\ldots,m\}$ with $[0]$
+    For a natural number $d$, $[d]=\{1,\ldots,m\}$ with $[0]$
     the empty set.
-    An \emph{$m\times n$-matrix} $\Phi$ over $\Delta$
-    is a function $\Phi:[m]\times [n]\to \Delta$.
-    These are also denoted $\Phi\in \Delta^{m\times n}$.
+    \begin{itemize}
+        \item
+    A \emph{coordinate vector} is function $v:[d]\to \Delta$
+    also denoted $v:\Delta^d$.  We access its $i$-th value by 
+    writing $v_i$.
+
+    \item 
+    An \emph{$d_1\times d_2$-matrix} $\Phi$ over $\Delta$
+    is a function $\Phi:[d_1]\times [d_2]\to \Delta$.
+    These are also denoted $\Phi:\Delta^{d_1\times d_2}$.
     Evaluating that function as $(i,j)$ is denoted 
     $\Phi_{ij}$.  The coordinates $i$ are called \emph{rows}
-    and the $j$'s are colled \emph{columns}.
+    and the $j$'s are called \emph{columns}.
+
+    \item A \emph{coordinate tensor} (also called a \emph{multiway array})
+     is function 
+    $t:[d_1]\times \cdots\times [d_{\ell}]\to \Delta$.
+    The $i:[\ell]$ are called \emph{axes}.
+    \end{itemize}
 \end{definition}
 
-Of the many important classes of $(m\times n)$-matrices the following list are the fundamental ones.
-\begin{gather}
+Of the many important classes of of matrices.
+\begin{align}
+    \tag{$e_i$}
+    e_i&:\Delta^n  & (e_i)_j  & = \left\{\begin{array}{cc}
+        1 & i=j\\ 0 & \text{else}
+    \end{array}\right.\\
     \tag{$E_{ij}$}
-    (E_{ij})_{kl}  = \left\{\begin{array}{cc}
+    E_{ij}& :\Delta^{m\times n}  
+    &
+    (E_{ij})_{kl} &= \left\{\begin{array}{cc}
         1 & i=k, j=l\\
         0 & \text{else}
-    \end{array}\right.\\
-\end{gather}
+    \end{array}\right.
+\end{align}
 These are sometimes called \emph{matrix units}.
 For example for $m=3,n=4$ we have
 \[
@@ -92,155 +113,243 @@ For $m=n$ we have the following essential matrices.
     \& (j\neq k\Rightarrow \Sigma_{ik}=0).
 \end{gather}
 These last three families are known as \emph{elementary matrices}.
-Each is invertible.
+Each is invertible. 
 
-\subsection{Clearing a row}
+\section{Clearing a column}
+
+
+Consider what we might do to clear a column in the following matrix.
+\begin{align*}
+    \begin{bmatrix}
+        4 & 12 \\
+        6 & 30 \\
+        27 & 24
+     \end{bmatrix}
+\end{align*}
+Ready...set...WAIT!  Lets examine what rules we are prepared to except.
+
+The first moves in linear algebra are to organize the data, swapping 
+what can be swapped.  Think of a larger chalkboard with the numbers in 
+place.  Would you really want the chore of copying the data over just 
+to move it?  Computers likewise rarely move the data either.  Instead 
+they just compose the function $M:[d_1]\times [d_2]\to \Delta$ 
+with permutations of $[d_1]$, respectively $[d_2]$ and leave the data 
+exactly as it was but allow the user of the matrix to interact with the 
+data as if it was moved.  Said another way, lets just leave permutations 
+off the menu as they are mostly cosmetic.
+
+The next move in linear algebra is to turn a nonzero into a $1$ so 
+we can use it as a pivot.  Indeed in Linear Algebra we saw by 
+Schur's lemma that the data can be written with coefficients in 
+a division ring.  So nonzero values have inverses.  But there 
+are two reasons to question this move.  When we rescale we can 
+build really small or really large numbers and this causes rounding 
+problems.  Addition is far more stable.  Secondly, there are numerous 
+applications where numbers are restricted and division is 
+not permitted.  So let us set aside rescaling until we need it.
+
+Subtract $2\times$ row 1 to from row 2 and once from row 3.
+\begin{align*}
+    \begin{bmatrix}
+        1 & 0 & 0 \\
+        -1 & 1 & 0 \\
+        -6 & 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        4 & 12\\
+        6 & 30 \\
+        27 & 24
+     \end{bmatrix}
+     & = 
+     \begin{bmatrix}
+        4 & 12 \\
+        2 & 18 \\
+        3 & -48 
+     \end{bmatrix}
+\end{align*}
+Subtract row 2 from row 3.
+\begin{align*}
+     \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & -1 & 1
+    \end{bmatrix}
+     \begin{bmatrix}
+        4 & 12 \\
+        2 & 18 \\
+        3 & -48 
+     \end{bmatrix}
+     & = 
+     \begin{bmatrix}
+        4 & 12 \\
+        2 & 18 \\
+        1 & -64 
+     \end{bmatrix}
+\end{align*}
+Use row 3 to subtract from rows 2 and 4.
+\begin{align*}
+     \begin{bmatrix}
+        1 & 0 & -4 \\
+        0 & 1 & -2 \\
+        0 & 0 & 1
+    \end{bmatrix}
+     \begin{bmatrix}
+        4 & 12 \\
+        2 & 18 \\
+        1 & -64 
+     \end{bmatrix}
+     & = 
+     \begin{bmatrix}
+        0 & 268\\
+        0 & 146\\
+        1 & -64 
+     \end{bmatrix}
+\end{align*}
+It took more work but we achieved the goal of clearing 
+the first column with no division and no permutations.
+
+Now lets try to clear one more column using only transvections. 
+We suppress these matrices.
+\begin{align*}
+    \begin{bmatrix}
+        4\\ 6\\ 12
+    \end{bmatrix}
+    \sim 
+    \begin{bmatrix}
+        4\\ 2\\ 0
+    \end{bmatrix}
+    \sim
+    \begin{bmatrix}
+        0\\ 2\\ 0
+    \end{bmatrix}
+\end{align*}
+Here we have to stop because we have refused to divide.
+This could of course just indicated that we tried the 
+wrong strategy.  Or it could be a symptom of an obstacle.
+Which is it?  Well notice the following.
+\begin{align*}
+    \begin{bmatrix}
+        4\\ 6\\ 12
+    \end{bmatrix}
+    =
+    2\begin{bmatrix}
+        2\\ 3\\ 6
+    \end{bmatrix}
+\end{align*}
+So whatever our transformations $Tv=T(2u)=2(Tu)$.
+So the result will 
+be a multiple of 2.  So unless it is all $0$ we are at our 
+best to get to $2e_i$.  This is a general principal.
+
+\begin{proposition}
+    If $v=\lambda u$ and $T$ is a product of transvections
+    then $Tv$ is a multiple of $\lambda$.
+\end{proposition}
+
+With this limitation in mind we can consider writing 
+all the values in the vector with no common divisor
+(meaning if $\lambda \mid v_i$ for each $i$ then 
+$\lambda$ is invertible).
+This is not possible in all number systems but that 
+is for another course entirely.
+Let us make one further assumption that there is an 
+algorithm to compute greatest common divisors (the 
+Euclidean algorithm will do).  This also allows us 
+to find a vector $u$ where $u\cdot v=1$.  
+
+For example, $v=(5,17)$ then we may use $u=(5,-2)$ 
+so that $7\cdot 5+-2\cdot 17=1$.
+Using this we have a means to clear.
+\begin{align*}
+    \begin{bmatrix}
+        1 & 0 \\
+        -2 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        1 & -2 \\
+        0 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        1 & 0 \\
+        -3 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        5 \\
+        17 \\
+    \end{bmatrix}
+     = 
+    \begin{bmatrix}
+        1 & 0 \\
+        -2 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        1 & -2 \\
+        0 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        5 \\ 2
+    \end{bmatrix}
+     =
+    \begin{bmatrix}
+        1 & 0 \\
+        -2 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        1 \\ 2
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 \\ 0 
+    \end{bmatrix}
+\end{align*}
+Now let us multiply these matrices together.
+\begin{align*}
+    \begin{bmatrix}
+        1 & 0 \\
+        -2 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        1 & -2 \\
+        0 & 1
+    \end{bmatrix}    
+    \begin{bmatrix}
+        1 & 0 \\
+        -3 & 1
+    \end{bmatrix}    
+    = 
+    \begin{bmatrix}
+        1 & -2\\
+        -2 & 5
+    \end{bmatrix}
+    \begin{bmatrix}
+        1 & 0 \\
+        -3 & 1
+    \end{bmatrix} 
+    =
+    \begin{bmatrix}
+        7 & -2\\
+        -17 & 5   
+    \end{bmatrix}.
+\end{align*}
+Now we see the anatomy of this solution.  Because $u\cdot v=1$
+we put $u$ in the first row.  Then we simply write down a basis 
+of vector perpendicular to $v$ for the remaining rows.
 
 \begin{definition}
-    Fix a ring $\Delta$.
-    A coordinate vector $v\in \Delta^m$ is \emph{pivotable}
-    if there is a $u\in \Delta^m$ such that 
-    \begin{align*}
-        u\cdot v & = \sum_{i:[m]} u_i v_i  = 1.
-    \end{align*}
+    A matrix is \emph{unimodular} if it is a product 
+    of transvections.  
 \end{definition}
 
 \begin{proposition}
-    If $v$ is pivotable and $u\cdot v=1$ then $u$ is also pivotable.
+    If we have a Euclidean algorithm then 
+    for every nonzero $v:\Delta^n$ there is a 
+    unimodular matrix $T$, a scalar $\lambda$,
+    and $i:[n]$ such that $Tv=\lambda e_i$.
 \end{proposition}
 
-In some situations it makes sense to replace the dot-product 
-with another bilinear form, for example using complex conjugation
-or weighted dot-products or other geometric considerations.
-
-\begin{proposition}
-    If $\Delta$ is a division ring then very non-zero vector is pivotable.    
-\end{proposition}
-\begin{proof}
-    if $v\neq 0$ then for some $i$, $v_i\neq 0$.  As $\Delta$ is a division 
-    ring, $v_i^{-1}$ exists.  So set $u=v_i^{-1} e_i$. Thus, 
-    $u\cdot v=v_i^{-1} v_i=1$.
-\end{proof}
-
-\begin{example}
-    Over $\mathbb{Z}$, $v=(2,3,7)$ is pivotable but $w=(2,6,14)$ is not.
-\end{example}
-\begin{proof}
-    $1=\gcd(2,3,7)=3\cdot 2+(-1)3+0\cdot 7$ whereas 
-    $2a+6b+14c$ is always even and therefore never equal to $1$.
-\end{proof}
-
-\begin{proposition}
-    Given a matrix $\Phi$ and a pivotable column $j$, 
-    then there is an invertible matrix $R_j$ such that $(R_j\Phi)_{*j}=e_i$.
-\end{proposition}
-\begin{proof}
-    Let $R_j$ be the identity $(m\times m)$-matrix with the $i$-th row removed 
-    and replaced by some $u$ for which $u\cdot \Phi_{*j}=1$.
-    Then 
-    \begin{align*}
-        (R_j \Phi)_{ij} & = u\cdot \Phi_{*j}=1.
-    \end{align*}
-
-    For any other non-zero entry $\Phi_{kj}$, define the transvection 
-    \begin{align*}
-        T_k & = I_m + (-\Phi_{kj}\Phi_{ij})E_{ik}
-    \end{align*}
-    It follows that 
-    \begin{align*}
-        (T_k \Phi)_{kj} = 0.
-    \end{align*}
-    So it is possible through a sequence of at most $m-1$ transvections 
-    to clear the non-zero values in column $j$.
-\end{proof}
-
-
-Given a matrix $\Phi$ and an entry $\Phi_{ij}$ which divides 
-all other entries $\Phi_{kj}$,
-
-Augment the matrix $\Phi$ by $I_m$ to create a tableaux
-$T=[I_m | \Phi]$.  
-The \emph{admissible} rows are initially $\{1,\ldots,m\}$.
-Choose an admissible row $i$.  Scan the $\Phi$ block for 
-a column $j$ with $\Phi_{ij}\neq 0$. Since we 
-are over a division ring $\Phi_{ij}$ is therefore invertible.
-
-
-Let us consider a matrix in which a subset of the columns 
-are an identity matrix.  That is, up to possibly permuting 
-the columns the matrix has the form
-\begin{align*}
-    \begin{bmatrix}
-        I_r & M \\ 
-        0 & 0 
-    \end{bmatrix}\in \Delta^{m\times n}
-\end{align*}
-Then an answer would be written down with formula 
-requiring no computation:
-\begin{align*}
-    \begin{bmatrix}
-        I_r & M \\ 
-        0 & 0 
-    \end{bmatrix}
-    \begin{bmatrix}
-        -M  \\ 
-        I_{n-r} 
-    \end{bmatrix}
-    & = 
-    \begin{bmatrix}
-        0\\
-        0
-    \end{bmatrix}
-\end{align*}
-
-
-\begin{proposition}
-    For every $(m\times n)$-matrix $\Phi$ over a division ring $\Delta$,
-    there is an invertible matrix 
-    $R$ and a permutation matrix $\Sigma$ such that 
-    \begin{align*}
-        R\Phi \Sigma & = \begin{bmatrix}
-            I_r & M \\
-            0 & 0 
-        \end{bmatrix}.
-    \end{align*}
-    Furthermore 
-    \begin{align*}
-        \Sigma \begin{bmatrix} -M\\ I_{n-r}\end{bmatrix}
-    \end{align*}
-    is a kernel map $\iota:\Delta^{n-r}\to \Delta^n$.
-\end{proposition}
-\begin{proof}
-    Augment the matrix $\Phi$ by $I_m$ to create a tableaux
-    $T=[I_m | \Phi]$.  
-    The \emph{admissible} rows are initially $\{1,\ldots,m\}$.
-    Choose an admissible row $i$.  Scan the $\Phi$ block for 
-    a column $j$ with $\Phi_{ij}\neq 0$. Since we 
-    are over a division ring $\Phi_{ij}$ is therefore invertible.
-
-
-    Select a non-zero column $j$ in the $\Phi$ 
-    block that is non-zero.  
-    \begin{align*}
-        \begin{bmatrix}
-            \Phi_{ij}^{-1} I_n 
-        \end{bmatrix}
-    \end{align*}    
-\end{proof}
-\begin{lstlisting}[language=Sava]
-def enteringCol():Fin[n]
-
-\end{lstlisting}
-
-Suppose 
-\begin{align*}
-    \Phi & = 
-    \begin{bmatrix}
-        1 & 0 & -2 & 1\\
-        0 & 1 & 2 & 2\\
-        0 & 0 & 0 & 0
-    \end{bmatrix}
-\end{align*}
+\subsection{Tableaux and Normal Forms}
+We all know the Reduced Row Echelon Form (RREF).  
+This is merely a recursive use of clearing columns as above.
+But it would help not to go in circles and have a target.
 
 
 \begin{definition}
@@ -253,8 +362,65 @@ Suppose
             0 & 0 
         \end{bmatrix}.
     \end{align*}
+    The \emph{Hermite Normal Form} is a permutation matrix 
+    $\Sigma$ and numbers $a_1|\cdots |a_r$ such that 
+    \begin{align*}
+        \Phi\Sigma & = \begin{bmatrix}
+            D & M \\
+            0 & 0 
+        \end{bmatrix}
+        & 
+        D & = \mathsf{Diag}(a_1,\ldots,a_r).
+    \end{align*}
 \end{definition}
 
+
+So how can we make this outcome?  
+Augment the matrix $\Phi$ by $I_m$ to create a tableaux
+$T=[I_m | \Phi]$.  
+The first $m$ columns are called \emph{artificial}.
+Now we scan the $\Phi$ for 
+a column $j$ which we can clear.  So if it is $0$ we skip it, 
+and if not we scan for the column whose greatest common 
+divisor divides the greatest common divisor of the entire matrix.
+Then repeat on the remaining basic columns.
+
+Let us look at this in the case of a division ring
+we clear the column with pivot in row 1.
+\begin{align*}
+    \begin{array}{|ccc|ccc|c|ccc|}
+        \hline
+        & & &  && & j & & & \\
+        \hline 
+        1 & & & & & & v_1 &  & & \\
+        & \ddots & & &  *  & & \vdots & & * & \\
+        & & 1 & & & &v_m & & & \\
+        \hline
+    \end{array}
+\end{align*}
+becomes
+\begin{align*}
+    \begin{array}{|ccc|ccc|c|ccc|}
+        \hline
+        & & &  && & j & & & \\
+        \hline 
+        * & & & & & & 1 &  & & \\
+        * & \ddots & & &  *  & & 0 & & * & \\
+        \vdots & & 1 & & & & \vdots & & & \\
+        \hline
+    \end{array}
+\end{align*}
+Because we had a pivot in row 1 the clear occurred only from row 1
+and so only the first column was affected.  It is said that the 
+first column is \emph{leaving} and the $j$-th column is \emph{entering}.
+We proceed with every artificial column.  The columns that enter 
+become the identity of the RREF.
+
+\begin{proposition}
+    Every matrix over a division ring has an RREF.
+    In the general ring case with Euclidean algorithm 
+    there is a Hermite Normal Form.
+\end{proposition}
 
 
 
@@ -323,11 +489,6 @@ print K
 This may be a surprise.  This is a matrix, not a 
 set.  Why?
 
-\begin{prob}
-    Find access to a computer algebra system 
-    and compute kernels of random $1000\times 1200$, 
-    $1000 \times 1000$ and $1200\time 1000$ matrices.
-\end{prob}
 
 \subsection{Kernels in Diagram language}
 To decode the difference between the set-wise concept of a kernel 
@@ -477,9 +638,85 @@ prize and your name in the newspaper.  One of the leading questions
 is if this tower may one day collapse, meaning that you only need to go 
 to some fixed value of $n$ before you know everything.
 
-\begin{prob} 
-    Prove that any two kernels are isomorphic.
-\end{prob}
+
+\subsection{Computing the kernel}
+The description above achieved the idea of kernel without clearifying 
+how to get it.  We can return to our RREF to get that answer.
+Let us consider a matrix in which a subset of the columns 
+are an identity matrix.  That is, up to possibly permuting 
+the columns the matrix has the form
+\begin{align*}
+    \begin{bmatrix}
+        I_r & M \\ 
+        0 & 0 
+    \end{bmatrix}\in \Delta^{m\times n}
+\end{align*}
+Then an answer would be written down with formula 
+requiring no computation:
+\begin{align*}
+    \begin{bmatrix}
+        I_r & M \\ 
+        0 & 0 
+    \end{bmatrix}
+    \begin{bmatrix}
+        -M  \\ 
+        I_{n-r} 
+    \end{bmatrix}
+    & = 
+    \begin{bmatrix}
+        0\\
+        0
+    \end{bmatrix}
+\end{align*}
+
+
+\begin{proposition}
+    For every $(m\times n)$-matrix $\Phi$ over a division ring $\Delta$,
+    there is an invertible matrix 
+    $R$ and a permutation matrix $\Sigma$ such that 
+    \begin{align*}
+        R\Phi \Sigma & = \begin{bmatrix}
+            I_r & M \\
+            0 & 0 
+        \end{bmatrix}.
+    \end{align*}
+    Furthermore 
+    \begin{align*}
+        \Sigma \begin{bmatrix} -M\\ I_{n-r}\end{bmatrix}
+    \end{align*}
+    is a kernel map $\iota:\Delta^{n-r}\to \Delta^n$.
+\end{proposition}
+\begin{proof}
+    Augment the matrix $\Phi$ by $I_m$ to create a tableaux
+    $T=[I_m | \Phi]$.  
+    The \emph{admissible} rows are initially $\{1,\ldots,m\}$.
+    Choose an admissible row $i$.  Scan the $\Phi$ block for 
+    a column $j$ with $\Phi_{ij}\neq 0$. Since we 
+    are over a division ring $\Phi_{ij}$ is therefore invertible.
+
+
+    Select a non-zero column $j$ in the $\Phi$ 
+    block that is non-zero.  
+    \begin{align*}
+        \begin{bmatrix}
+            \Phi_{ij}^{-1} I_n 
+        \end{bmatrix}
+    \end{align*}    
+\end{proof}
+\begin{lstlisting}[language=Sava]
+def enteringCol():Fin[n]
+
+\end{lstlisting}
+
+Suppose 
+\begin{align*}
+    \Phi & = 
+    \begin{bmatrix}
+        1 & 0 & -2 & 1\\
+        0 & 1 & 2 & 2\\
+        0 & 0 & 0 & 0
+    \end{bmatrix}
+\end{align*}
 
 
 
@@ -683,6 +920,62 @@ v = iota x
 % \label{lst:kernel-comp}
 % \end{lstfloat}
 
+
+\subsection*{Problems}
+\begin{prob}
+    Identify the type of elementary matrix displayed below.
+\begin{gather*}
+    A =
+    \begin{bmatrix}
+         1 & 0 & 0 & 0 \\
+         0 & 1 & 0 & \alpha \\
+         0 & 0 & 1 & 0 \\
+         0 & 0 & 0 & 1 
+    \end{bmatrix}
+    \quad 
+    B=
+    \begin{bmatrix} 
+        0 & 1 & 0 \\
+        0 & 0 & 1 \\
+        1 & 0 & 0 
+    \end{bmatrix}
+    \quad 
+    C=
+    \begin{bmatrix}
+        42 & 0 \\
+        0 & \sqrt[128]{17}
+    \end{bmatrix}
+    \quad 
+    D = 
+    \begin{bmatrix}
+        0 & 0 & 0 & 1 \\ 
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 0 & 0
+    \end{bmatrix}
+\end{gather*}
+\end{prob}
+
+\begin{prob}
+    Complete the reduction of the matrix 
+    \begin{align*}
+        \begin{bmatrix}
+            4 & 12 \\
+            6 & 30 \\
+            27 & 24
+         \end{bmatrix}
+    \end{align*}    
+\end{prob}
+
+\begin{prob}
+    Find access to a computer algebra system 
+    and compute kernels of random $1000\times 1200$, 
+    $1000 \times 1000$ and $1200\time 1000$ matrices.
+\end{prob}
+
+\begin{prob} 
+    Prove that any two kernels are isomorphic.
+\end{prob}
 
 
 \end{document}
